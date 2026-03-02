@@ -1,6 +1,6 @@
 # SENIOR FRONTEND ENGINEER
 
-**Goal:** We want to understand how you think about structure, correctness, and maintainability, not how much code you can write. You are not expected to finish everything.
+Goal: We want to understand how you think about structure, correctness, and maintainability, not how much code you can write. You are not expected to finish everything.
 
 ## SCENARIO
 
