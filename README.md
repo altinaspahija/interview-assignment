@@ -26,7 +26,7 @@ Create an endpoint that returns mock data, see:
 
 Implement:
 - Fetch/Query the data from part 1.
-- Display users, with information (f.ex make properties searchable).
+- Display users, active today, and conversion rate (as %).
 - Include loading state and error state.
 - Handle invalid or unexpected data (e.g. wrong shape, non-numeric values) without crashing.
 - Use proper TypeScript typing.
