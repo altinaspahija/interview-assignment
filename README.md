@@ -1,65 +1,63 @@
-# Interview Assignment: Python API Service
+# SENIOR FRONTEND ENGINEER
 
-## Overview
-Your task is to build a Python API service that provides search, mutation, and subscription capabilities for a dataset of user information. The service should be built with scalability, maintainability, and performance in mind.
+**Goal:** We want to understand how you think about structure, correctness, and maintainability, not how much code you can write. You are not expected to finish everything.
 
-## Dataset
-The dataset (`data/mock_data.csv`) contains user information with the following fields:
-- id
-- first_name
-- last_name
-- email
-- gender
-- ip_address
+## SCENARIO
 
-## Requirements
+You are implementing a small users Widget that will be reused across multiple products. Assume this code will live in production and be maintained by other engineers. Prioritize clarity, correctness, and sensible decisions.
 
-### 1. API Endpoints
+---
 
-#### Search Endpoint
-- Implement a search endpoint that allows querying the dataset
-- Support filtering by any field or combination of fields
-- Implement pagination for large result sets
-- Return results in JSON format
+## PART 1 — PYTHON API
 
-#### Change Endpoint
-- Implement endpoints to:
-  - Add new records
-  - Update existing records
-  - Delete records
-- Validate input data
-- Handle errors appropriately
+Create an endpoint that returns mock data, see:
+- ./data/mock_data.csv
 
-#### Subscribe Endpoint
-- Implement a subscription system that allows clients to:
-  - Subscribe to changes in specific records
-  - Subscribe to search results (when new records matching a search query are added)
-- Notify subscribers in real-time when relevant changes occur
-- Support one or multiple subscription types (WebSocket, SSE, or similar)
+**Requirements:**
+- Use Python (FastAPI).
+- Read `data/mock_data.csv` and derive the three stats from the dataset. The CSV has: id, first_name, last_name, email, gender, ip_address. Derivation rules can be minimal/simulated (e.g. users = row count, active_today = fixed % of users, conversion_rate = constant); document your rule.
+- Define a response model/type.
+- Handle one realistic edge case (e.g. missing or malformed `data/mock_data.csv` → 503/500 with clear error).
+- Keep implementation minimal.
 
-### 2. Technical Requirements
-- Use Python 3.x
-- Consider scalability and performance
+---
 
-### 3. Bonus Points
-- Implement authentication and authorization
-- Add rate limiting
-- Implement caching
-- Add monitoring and logging
-- Containerize the application
+## PART 2 — REACT + TYPESCRIPT
 
-## Evaluation Criteria
-Your solution will be evaluated based on:
-1. Code quality and organization
-2. Implementation of requirements
-3. Error handling and edge cases
-4. Performance considerations
-5. Documentation
-7. Bonus features implementation
+Implement:
+- Fetch/Query the data from part 1.
+- Display users, active today, and conversion rate (as %).
+- Include loading state and error state.
+- Handle invalid or unexpected data (e.g. wrong shape, non-numeric values) without crashing.
+- Use proper TypeScript typing.
+- Assume this component will be reused across multiple applications. Avoid over-engineering.
 
-## Submission
-Please provide:
-1. Link to repository with source code
-2. README with setup and running instructions
-3. API documentation
-4. Any additional notes or considerations
+---
+
+## PART 3 — ENGINEERING DECISION
+
+Add one improvement you believe a senior engineer would include (e.g. custom hook, reusable component, validation layer, formatting utility, accessibility improvement, or error boundary).
+
+Add a short comment explaining why this matters at scale.
+
+---
+
+## AI USAGE
+
+You are welcome to use AI tools (ChatGPT, Copilot, etc.). We do not evaluate whether code was written with AI assistance. What matters is that you can clearly explain: your structure and decisions, tradeoffs you made, how your solution works, and what you would change with more time.
+
+---
+
+## DELIVERABLES
+
+Provide:
+
+- GitHub repo or zip file.
+- README including:
+  - how to run backend and frontend
+  - one tradeoff you made
+  - one thing you intentionally did `not` implement
+
+Evaluation focuses on structure, typing, edge cases, UI clarity, and reasoning.
+
+---
