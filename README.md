@@ -79,10 +79,9 @@ With proxy enabled, the widget calls:
 
 /stats (proxied to the backend)
 
----
+## PART 3 — ENGINEERING DECISION
 
-Engineering notes (structure, typing, edge cases, UI clarity, reasoning)
-Structure
+### Structure
 
 Backend - Minimal FastAPI app with a single /stats endpoint reading data/mock_data.csv
 
@@ -96,9 +95,7 @@ frontend/src/components/UsersStatsWidget.tsx: presentation component that render
 
 frontend/src/App.tsx: mounts the widget and uses endpointUrl="/stats"
 
----
-
-Key decisions
+### Key decisions
 
 Runtime validation is used even with TypeScript because network responses are untrusted at runtime. Invalid/unexpected response shapes are handled gracefully without crashing the UI.
 
@@ -106,9 +103,7 @@ The widget renders explicit loading and error states and provides a Retry action
 
 Fetching uses AbortController and abort errors are ignored to avoid setting state after unmount and to behave safely in React 18 dev behavior.
 
----
-
-Tradeoff (one I made)
+### Tradeoff (one I made)
 
 I intentionally avoided adding a third-party data fetching/caching library (e.g. React Query) to keep the solution minimal and dependency-light for reuse across multiple applications.
 
