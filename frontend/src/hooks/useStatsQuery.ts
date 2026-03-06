@@ -1,6 +1,5 @@
-import * as React from "react";
 import { fetchStats, type StatsResponse } from "../api/stats";
-
+import { useState, useEffect, useCallback } from "react";
 /**
  * Why this matters at scale:
  * Extracting fetch + state handling into a hook keeps UI components simple and consistent.
@@ -23,13 +22,13 @@ type StatsQueryInternalState =
   | { status: "success"; data: StatsResponse; error: null };
 
 export function useStatsQuery(endpointUrl: string): StatsQueryState {
-  const [state, setState] = React.useState<StatsQueryInternalState>({
+  const [state, setState] = useState<StatsQueryInternalState>({
     status: "loading",
     data: null,
     error: null,
   });
 
-  const refetch = React.useCallback(() => {
+  const refetch = useCallback(() => {
     const controller = new AbortController();
 
     setState({ status: "loading", data: null, error: null });
@@ -53,7 +52,7 @@ export function useStatsQuery(endpointUrl: string): StatsQueryState {
     return () => controller.abort();
   }, [endpointUrl]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const cleanup = refetch();
     return cleanup;
   }, [refetch]);
