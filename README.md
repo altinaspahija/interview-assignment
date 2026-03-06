@@ -1,63 +1,123 @@
-# SENIOR FRONTEND ENGINEER
+# Interview Assignment — Users Widget (Parts 1–3)
 
-Goal: We want to understand how you think about structure, correctness, and maintainability, not how much code you can write. You are not expected to finish everything.
+This repository contains a small reusable **Users Widget** implemented with:
 
-## SCENARIO
-
-You are implementing a small users Widget that will be reused across multiple products. Assume this code will live in production and be maintained by other engineers. Prioritize clarity, correctness, and sensible decisions.
-
----
-
-## PART 1 — PYTHON API
-
-Create an endpoint that returns mock data, see:
-- ./data/mock_data.csv
-
-**Requirements:**
-- Use Python (FastAPI).
-- Read `data/mock_data.csv` and derive the three stats from the dataset. The CSV has: id, first_name, last_name, email, gender, ip_address. Derivation rules can be minimal/simulated (e.g. users = row count, active_today = fixed % of users, conversion_rate = constant); document your rule.
-- Define a response model/type.
-- Handle one realistic edge case (e.g. missing or malformed `data/mock_data.csv` → 503/500 with clear error).
-- Keep implementation minimal.
+- **Backend (FastAPI)**: exposes `GET /stats` derived from `./data/mock_data.csv`
+- **Frontend (React + TypeScript)**: fetches stats from the backend and displays **users**, **active today**, and **conversion rate** (as %) with loading + error states and runtime validation
 
 ---
 
-## PART 2 — REACT + TYPESCRIPT
+## How to run
 
-Implement:
-- Fetch/Query the data from part 1.
-- Display users, active today, and conversion rate (as %).
-- Include loading state and error state.
-- Handle invalid or unexpected data (e.g. wrong shape, non-numeric values) without crashing.
-- Use proper TypeScript typing.
-- Assume this component will be reused across multiple applications. Avoid over-engineering.
+## 1) Backend (FastAPI)
 
----
+### Requirements
 
-## PART 3 — ENGINEERING DECISION
+- Python 3.x
 
-Add one improvement you believe a senior engineer would include (e.g. custom hook, reusable component, validation layer, formatting utility, accessibility improvement, or error boundary).
+### Run
 
-Add a short comment explaining why this matters at scale.
+From the repo root (where `main.py` exists):
 
----
-
-## AI USAGE
-
-You are welcome to use AI tools (ChatGPT, Copilot, etc.). We do not evaluate whether code was written with AI assistance. What matters is that you can clearly explain: your structure and decisions, tradeoffs you made, how your solution works, and what you would change with more time.
+```bash
+source .venv/bin/activate
+python3 -m pip install fastapi uvicorn
+python3 -m uvicorn main:app --reload
 
 ---
 
-## DELIVERABLES
+Backend URLs
 
-Provide:
-
-- GitHub repo or zip file.
-- README including:
-  - how to run backend and frontend
-  - one tradeoff you made
-  - one thing you intentionally did `not` implement
-
-Evaluation focuses on structure, typing, edge cases, UI clarity, and reasoning.
+Endpoint: http://127.0.0.1:8000/stats
+Swagger UI: http://127.0.0.1:8000/docs
 
 ---
+
+Derivation rules (documented)
+
+users = number of non-empty rows in data/mock_data.csv
+
+active_today = simulated as round(users * 0.20)
+
+conversion_rate = constant 0.035 (3.5%)
+
+---
+
+Edge case handling
+
+Missing data/mock_data.csv → returns 503
+
+Malformed CSV or missing required columns → returns 500 with a clear message
+
+---
+
+2) Frontend (React + TypeScript)
+Requirements
+
+Node.js + npm
+
+Run
+
+From the repo root:
+
+cd frontend
+npm install
+npm start
+Frontend URL
+
+http://localhost:3000
+
+---
+
+Local dev API access (proxy)
+
+To avoid CORS issues in local development, CRA uses a proxy configured in frontend/package.json:
+
+"proxy": "http://127.0.0.1:8000"
+
+With proxy enabled, the widget calls:
+
+/stats (proxied to the backend)
+
+---
+
+Engineering notes (structure, typing, edge cases, UI clarity, reasoning)
+Structure
+
+Backend - Minimal FastAPI app with a single /stats endpoint reading data/mock_data.csv
+
+Frontend:
+
+frontend/src/api/stats.ts: fetch + runtime validation (parseStats) and typing (StatsResponse)
+
+frontend/src/hooks/useStatsQuery.ts: reusable hook encapsulating loading/error/success + retry + abort handling (Part 3 improvement)
+
+frontend/src/components/UsersStatsWidget.tsx: presentation component that renders UI states and formatted output
+
+frontend/src/App.tsx: mounts the widget and uses endpointUrl="/stats"
+
+---
+
+Key decisions
+
+Runtime validation is used even with TypeScript because network responses are untrusted at runtime. Invalid/unexpected response shapes are handled gracefully without crashing the UI.
+
+The widget renders explicit loading and error states and provides a Retry action.
+
+Fetching uses AbortController and abort errors are ignored to avoid setting state after unmount and to behave safely in React 18 dev behavior.
+
+---
+
+Tradeoff (one I made)
+
+I intentionally avoided adding a third-party data fetching/caching library (e.g. React Query) to keep the solution minimal and dependency-light for reuse across multiple applications.
+
+One thing I intentionally did not implement
+
+I did not add automated tests (unit tests for parseStats and component tests for loading/error/success states). With more time, I would add:
+
+unit tests for parseStats runtime validation
+
+component tests for loading/error/success rendering
+
+```

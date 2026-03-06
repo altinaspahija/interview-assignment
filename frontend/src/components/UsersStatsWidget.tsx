@@ -1,4 +1,3 @@
-import React from "react";
 import { useStatsQuery } from "../hooks/useStatsQuery";
 
 type UsersStatsWidgetProps = {
