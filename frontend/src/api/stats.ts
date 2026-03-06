@@ -1,7 +1,7 @@
 export type StatsResponse = {
   users: number;
   active_today: number;
-  conversion_rate: number;
+  conversion_rate: number; // 0..1
 };
 
 function isRecord(v: unknown): v is Record<string, unknown> {
@@ -17,6 +17,9 @@ function toNumber(v: unknown): number | null {
   return null;
 }
 
+/**
+ * Runtime validation so the UI won't crash on unexpected API responses.
+ */
 export function parseStats(data: unknown): StatsResponse {
   if (!isRecord(data)) throw new Error("Invalid response: expected an object");
 

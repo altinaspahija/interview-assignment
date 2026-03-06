@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { fetchStats, type StatsResponse } from "../api/stats";
+import React from "react";
+import { useStatsQuery } from "../hooks/useStatsQuery";
 
 type UsersStatsWidgetProps = {
   endpointUrl: string;
@@ -14,44 +14,9 @@ export function UsersStatsWidget({
   endpointUrl,
   className,
 }: UsersStatsWidgetProps) {
-  const [data, setData] = useState<StatsResponse | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { status, data, error, refetch } = useStatsQuery(endpointUrl);
 
-  const load = useCallback(() => {
-    const controller = new AbortController();
-
-    setLoading(true);
-    setError(null);
-
-    fetchStats(endpointUrl, controller.signal)
-      .then((stats) => {
-        setData(stats);
-      })
-      .catch((e: unknown) => {
-        const isAbort =
-          controller.signal.aborted ||
-          (e instanceof Error && e.name === "AbortError") ||
-          (e instanceof Error && e.message.toLowerCase().includes("aborted"));
-
-        if (isAbort) return;
-
-        setData(null);
-        setError(e instanceof Error ? e.message : "Unknown error");
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-
-    return () => controller.abort();
-  }, [endpointUrl]);
-
-  useEffect(() => {
-    const cleanup = load();
-    return cleanup;
-  }, [load]);
-
-  if (loading) {
+  if (status === "loading") {
     return (
       <div className={className} aria-busy="true" aria-live="polite">
         Loading stats…
@@ -59,19 +24,15 @@ export function UsersStatsWidget({
     );
   }
 
-  if (error) {
+  if (status === "error") {
     return (
       <div className={className} role="alert">
         <div>Could not load stats: {error}</div>
-        <button type="button" onClick={load}>
+        <button type="button" onClick={refetch}>
           Retry
         </button>
       </div>
     );
-  }
-
-  if (!data) {
-    return <div className={className}>No data available.</div>;
   }
 
   return (
