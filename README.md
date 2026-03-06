@@ -24,7 +24,7 @@ source .venv/bin/activate
 python3 -m pip install fastapi uvicorn
 python3 -m uvicorn main:app --reload
 
----
+```
 
 Backend URLs
 
@@ -51,23 +51,23 @@ Malformed CSV or missing required columns → returns 500 with a clear message
 
 ---
 
-2) Frontend (React + TypeScript)
-Requirements
+## 2) Frontend (React + TypeScript)
 
-Node.js + npm
+### Requirements
 
-Run
+- Node.js + npm
+
+### Run
 
 From the repo root:
-
+```bash
 cd frontend
 npm install
 npm start
 Frontend URL
 
 http://localhost:3000
-
----
+```
 
 Local dev API access (proxy)
 
